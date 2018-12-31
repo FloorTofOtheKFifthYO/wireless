@@ -65,6 +65,7 @@ void SystemClock_Config(void);
 
 /* USER CODE BEGIN 0 */
 void TEST_FUNC(CanRxMsgTypeDef* pRxMsg);
+void TEST_FUNC2(CanRxMsgTypeDef* pRxMsg);
 /* USER CODE END 0 */
 
 /**
@@ -102,6 +103,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   can_init();
   can_add_callback(325, TEST_FUNC);
+  can_add_callback(324, TEST_FUNC2);
   //delay_init(48);
                                
   NRF_Init(&NRF24l01);
@@ -189,12 +191,23 @@ void TEST_FUNC(CanRxMsgTypeDef* pRxMsg)
     {
         Data[i] = pRxMsg->Data[i];
     }
-    uprintf("%s\r\n",Data);  
+    uprintf("canrcv = %s\r\n",Data);  
 }
 
 void HAL_SYSTICK_Callback(void){
   static int time_1ms_cnt;
   time_1ms_cnt++;
+}
+
+void TEST_FUNC2(CanRxMsgTypeDef* pRxMsg)
+{
+    uint8_t Data[6];
+    int i;
+    for(i = 0; i < 6; i++)
+    {
+        Data[i] = pRxMsg->Data[i];
+    }
+    uprintf("canrcv = %d %d %d\r\n",Data[0]*128 + Data[1], Data[2]*128 + Data[3], Data[4]*128 + Data[5]);
 }
 /* USER CODE END 4 */
 

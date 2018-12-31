@@ -97,21 +97,34 @@ float TO_PERCENT(uint16_t data){
 //***********************************callbackº¯Êý**************************************/
 static void NRF_Analize_Message(uint8_t * data,uint16_t len){
 
-    if(crc_check(data,(int)len - 2))
+    /*for(int i = 0; i < 32; i++)
+        uprintf("%d ",data[i]);
+    uprintf("\r\n");*/
+    //if(crc_check(data,(int)len - 2))
+    //if(crc_check(data,30))
+    if(1)
     {
         uint8_t can_data[8] = {0};
         int cnt = 0;
-        for(int i = 0; i < len - 2; i++)
+        if(data[0] == 'R')
         {
-            if(data[i] == 0) break;
-            can_data[i] = data[i];
-            cnt ++;
-            //uprintf("%c",data[i]);
+            for(int i = 0; i < 6; i++)
+            {
+                can_data[i] = data[i + 1];
+            }
+            can_send_msg(324, can_data, 6);
         }
-        can_send_msg(325, can_data, cnt);
-        //uprintf("\r\n");
+        else
+        {
+            for(int i = 0; i < len - 2; i++)
+            {
+                if(data[i] == 0) break;
+                can_data[i] = data[i];
+                cnt ++;
+            }
+            can_send_msg(325, can_data, cnt);
+        }
     }
-    //uprintf("len = %d %s",len,data);
   nrf_watch_dog=0;
 }
 
